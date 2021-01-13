@@ -1,6 +1,8 @@
 # Example
 ```shell
-$ cp -r ../yara_rules-master/Miners ./
+# https://github.com/delyee/yara_rules/tree/master/Miners
+
+$ cp -r ../yara_rules-master/Miners ./Rules/
 $ sudo python3 scanPids.py
 
 [!] 8831 PIDs loaded
