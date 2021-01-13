@@ -1,8 +1,8 @@
 # Example
 ```shell
 # check for updates: https://github.com/delyee/yara_rules
+# cp -r ../yara_rules-master/Miners ./Rules/
 
-$ cp -r ../yara_rules-master/Miners ./Rules/
 $ sudo python3 scanPids.py
 
 [!] 8831 PIDs loaded
