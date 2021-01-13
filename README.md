@@ -1,6 +1,6 @@
 # Example
 ```shell
-# https://github.com/delyee/yara_rules/tree/master/Miners
+# check for updates: https://github.com/delyee/yara_rules/tree/master/Miners
 
 $ cp -r ../yara_rules-master/Miners ./Rules/
 $ sudo python3 scanPids.py
