@@ -1,3 +1,42 @@
+'''
+Внедрить данный функционал в yara_agent и создать рабочий билд Client-Server архитектуры. 
+
+Вернуться к разработке async-yara-backend, удалить лишнее и вытащить из private, а так же:
+1. упростить первый билд и:
+- сделать вывод на сервере в консоль 
+- тестить на "low load" - хватит 1-3 клиентов
+2. переписать механизм обновления правил:
+- Server делает git fetch && git pull каждые 15 минут
+- Server отдает по https и при наличии token скомпилированные правила yara: таким образом agent 
+требуется выкачать всего лишь 1 файл при старте
+'''
+
+### Закончить вышеописанное до внесения любых изменений (need backup) - вывод в agent идет только в файл и
+## prettytable там не требуется
+
+
+'''
+Динамический "дополняющийся" вывод в prettytable: hack из-за multithread
+1. создаем отдельный array OUTPUT при старте main для последующей многократной отрисовки в table
+2. Переделать существующий lock треда для оптимизации ввода/вывода:
+- убираем COUNTER
+- наполняем существующими данными из mycallback array OUTPUT 
+- старый вывод из mycallback направляем в файл для "устойчивого" output юзверю
+3. добавляем row в object prettytable при каждой итерации While
+4. найти метод в lib prettytable для "очистки" экрана или взять вызов clear из os.system
+5. в итерации While заново отрисовываем table
+'''
+
+
+'''
+- Написать функцию для парсинга cmdline
+- Добавить в file-output и table username (cwd, вроде) и cmdline найденого PID
+- Ограничить вывод Strings - мусор на экране
+'''
+
+### Закончить вышеописанное до рабочего билда v3 
+
+
 from queue import Queue
 import threading
 import yara
@@ -43,18 +82,18 @@ for x in Path('/proc').iterdir():
     if x.is_dir() and x.name.isdigit():
         PIDsQueue.put(int(x.name))
 
-
-for i in range(THREADS):
-	t = Scanner()
-	t.setDaemon(True)
-	t.start()
-
 print('[!] {} PIDs loaded\n[!] Wait starting threads...'.format(PIDsQueue.qsize()))
-sleep(10)
+
+for _ in range(THREADS):
+	_ = Scanner()
+	_.setDaemon(True)
+	_.start()
+
+sleep(3)
 
 while not PIDsQueue.empty():
-	print('[%] Scanned: {} | Queue size: {} | Active threads: {}'.format(COUNTER, PIDsQueue.qsize(), threading.active_count()))
-	sleep(30)
+	print('[%] Scanned: {} | Queue size: {} | Active threads: {}'.format(COUNTER, PIDsQueue.qsize(), threading.active_count()-1))
+	sleep(15)
 
 PIDsQueue.join()
 
